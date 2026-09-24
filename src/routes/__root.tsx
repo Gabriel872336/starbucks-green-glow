@@ -78,10 +78,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Starbucks Perú — Colecciones exclusivas" },
-      { name: "description", content: "Colecciones de café y accesorios inspiradas en el ritual Starbucks Perú." },
+      { name: "description", content: "Colecciones de café y accesorios inspiradas en la experiencia Starbucks Perú." },
       { name: "author", content: "Starbucks Perú" },
       { property: "og:title", content: "Starbucks Perú — Colecciones exclusivas" },
-      { property: "og:description", content: "Descubre accesorios, café y experiencias exclusivas creadas para tu ritual diario." },
+      { property: "og:description", content: "Descubre accesorios, café y propuestas exclusivas creadas para tu experiencia diaria." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -104,7 +104,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="es">
       <head>
         <HeadContent />
       </head>
