@@ -69,8 +69,6 @@
   --color-cart-foreground: var(--cart-foreground);
   --color-cart-summary: var(--cart-summary);
   --color-overlay: var(--overlay);
-  --color-whatsapp: var(--whatsapp);
-  --color-whatsapp-foreground: var(--whatsapp-foreground);
 }
 
 :root {
@@ -98,12 +96,10 @@
   --mint: oklch(0.90 0.031 164);
   --forest: oklch(0.28 0.07 158);
   --cream: oklch(0.955 0.009 88);
-  --cart: oklch(0.18 0.045 250);
-  --cart-foreground: oklch(0.97 0.008 88);
-  --cart-summary: oklch(0.145 0.04 250);
-  --overlay: oklch(0.12 0.025 250 / 68%);
-  --whatsapp: oklch(0.64 0.19 145);
-  --whatsapp-foreground: oklch(1 0 0);
+  --cart: oklch(0.43 0.105 158);
+  --cart-foreground: oklch(0.99 0 0);
+  --cart-summary: oklch(0.28 0.07 158);
+  --overlay: oklch(0.18 0.055 158 / 68%);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);

@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- The floating Barista uses one browser-persisted AI SDK `UIMessage[]` conversation and a server streaming route; this preserves context without requiring account storage.
