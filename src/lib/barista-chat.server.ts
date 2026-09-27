@@ -36,7 +36,7 @@ export async function handleBaristaChat(request: Request) {
     return Response.json({ message: "La conversación enviada no es válida." }, { status: 400 });
   }
 
-  const messages = parsed.data.messages as UIMessage[];
+  const messages = parsed.data.messages as unknown as UIMessage[];
   const runIdFetch = createLovableAiGatewayRunIdFetch(getLovableAiGatewayRunId(request));
   const provider = createOpenAI({
     baseURL: "https://ai.gateway.lovable.dev/v1",
