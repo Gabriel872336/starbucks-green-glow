@@ -28,7 +28,7 @@ const registerSchema = z.object({
   terms: z.literal(true, { errorMap: () => ({ message: "Debes aceptar los términos" }) }),
 }).refine((d) => d.password === d.confirm, { path: ["confirm"], message: "Las contraseñas no coinciden" });
 
-type Errors = Record<string, string>;
+type Errors = Partial<Record<"name" | "email" | "password" | "confirm" | "terms", string>>;
 
 function Field({ label, name, type = "text", value, onChange, error, autoComplete }: { label: string; name: string; type?: string; value: string; onChange: (v: string) => void; error?: string; autoComplete?: string }) {
   return <label className="block">
@@ -52,7 +52,7 @@ function AuthPage() {
     const result = tab === "login" ? loginSchema.safeParse(form) : registerSchema.safeParse(form);
     if (!result.success) {
       const errs: Errors = {};
-      for (const issue of result.error.issues) errs[String(issue.path[0])] ??= issue.message;
+      for (const issue of result.error.issues) errs[issue.path[0] as keyof Errors] ??= issue.message;
       setErrors(errs);
       return;
     }
