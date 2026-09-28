@@ -30,7 +30,7 @@ const registerSchema = z.object({
 
 type Errors = Partial<Record<"name" | "email" | "password" | "confirm" | "terms", string>>;
 
-function Field({ label, name, type = "text", value, onChange, error, autoComplete }: { label: string; name: string; type?: string; value: string; onChange: (v: string) => void; error?: string; autoComplete?: string }) {
+function Field({ label, name, type = "text", value, onChange, error, autoComplete }: { label: string; name: string; type?: string; value: string; onChange: (v: string) => void; error?: string | undefined; autoComplete?: string }) {
   return <label className="block">
     <span className="text-xs font-bold uppercase tracking-[0.14em] text-forest">{label}</span>
     <input name={name} type={type} value={value} autoComplete={autoComplete} onChange={(e) => onChange(e.target.value)} aria-invalid={!!error}
