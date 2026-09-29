@@ -39,7 +39,7 @@ function WhatsAppIcon() {
 function Storefront() {
   const [collection, setCollection] = useState("Green");
   const [category, setCategory] = useState("Todos");
-  const [cart, setCart] = useState<number[]>([]);
+  const { cart, setCart, items, subtotal } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
@@ -54,8 +54,7 @@ function Storefront() {
     return false;
   }
   const filtered = useMemo(() => products.filter((p) => p.collection === collection && (category === "Todos" || p.category === category || category === "Exclusivo" && p.exclusive)), [collection, category]);
-  const cartItems = useMemo(() => products.map((product) => ({ ...product, quantity: cart.filter((id) => id === product.id).length })).filter((product) => product.quantity > 0), [cart]);
-  const subtotal = cartItems.reduce((sum, product) => sum + product.price * product.quantity, 0);
+  const cartItems = items;
 
   useEffect(() => {
     if (!cartOpen) return;
