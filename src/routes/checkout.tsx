@@ -44,7 +44,7 @@ function QrPlaceholder() {
   </svg>;
 }
 
-function Field({ label, error, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string }) {
+function Field({ label, error, ...props }: React.InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string | undefined }) {
   return <label className="grid gap-1.5 text-sm font-semibold text-forest">{label}
     <input {...props} className={`h-11 rounded-lg border bg-background px-3 text-sm font-normal text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 ${error ? "border-destructive" : "border-input"}`} />
     {error && <span className="text-xs font-medium text-destructive">{error}</span>}
@@ -58,7 +58,7 @@ function CheckoutPage() {
   const [step, setStep] = useState<"select" | "details">("select");
   const [method, setMethod] = useState<Method>("tarjeta");
   const [card, setCard] = useState({ name: "", number: "", expiry: "", cvv: "" });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<{ name?: string; number?: string; expiry?: string; cvv?: string }>({});
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [operation, setOperation] = useState("");
   const [loading, setLoading] = useState(false);
@@ -85,7 +85,7 @@ function CheckoutPage() {
   }
 
   function validateCard() {
-    const e: Record<string, string> = {};
+    const e: { name?: string; number?: string; expiry?: string; cvv?: string } = {};
     if (card.name.trim().length < 3) e.name = "Ingresa el nombre del titular";
     if (card.number.replace(/\s/g, "").length !== 16) e.number = "El número debe tener 16 dígitos";
     if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(card.expiry)) e.expiry = "Formato MM/AA";
