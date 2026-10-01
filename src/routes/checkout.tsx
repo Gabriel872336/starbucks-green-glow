@@ -30,7 +30,7 @@ function CheckoutPage() {
   const [step, setStep] = useState<1 | 2>(1);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [card, setCard] = useState({ name: "", number: "", expiry: "", cvv: "" });
-  const [cardErrors, setCardErrors] = useState<Record<string, string>>({});
+  const [cardErrors, setCardErrors] = useState<{ name?: string; number?: string; expiry?: string; cvv?: string }>({});
   const [reference, setReference] = useState("");
   const [refError, setRefError] = useState("");
 
