@@ -5,25 +5,13 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Check, Menu, Minus, Plus, Search, ShoppingBag, UserRound, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { products } from "@/lib/products";
+import { useCart } from "@/lib/cart";
 import heroImage from "@/assets/collection-hero.jpg";
 import vaultImage from "@/assets/membership-vault.jpg";
-import tumblerImage from "@/assets/products/tumbler-green.jpg";
-import mugImage from "@/assets/products/mug-botanical.jpg";
-import kitImage from "@/assets/products/kit-gold.jpg";
-import coffeeImage from "@/assets/products/coffee-reserve.jpg";
-import pinImage from "@/assets/products/pin-botanical.jpg";
-import travelImage from "@/assets/products/travel-cup.jpg";
 
 const navItems = ["Ediciones Limitadas", "Colección", "Exclusivos", "Membresía"];
 const categories = ["Todos", "Vasos térmicos", "Pines", "Kit reutilizable", "Tazas", "Bolsas de café", "Exclusivo"];
-const products = [
-  { id: 1, title: "Tumbler Verde Reserva", price: 129, category: "Vasos térmicos", collection: "Green", image: tumblerImage, exclusive: true },
-  { id: 2, title: "Taza Botánica Andes", price: 89, category: "Tazas", collection: "Perú", image: mugImage, exclusive: false },
-  { id: 3, title: "Kit Experiencia Dorada", price: 249, category: "Kit reutilizable", collection: "Green", image: kitImage, exclusive: true },
-  { id: 4, title: "Café Reserva del Valle", price: 72, category: "Bolsas de café", collection: "Perú", image: coffeeImage, exclusive: true },
-  { id: 5, title: "Pin Botánico Colección", price: 49, category: "Pines", collection: "Perú", image: pinImage, exclusive: false },
-  { id: 6, title: "Vaso Reutilizable Verde", price: 79, category: "Vasos térmicos", collection: "Green", image: travelImage, exclusive: false },
-];
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [
@@ -52,7 +40,7 @@ function WhatsAppIcon() {
 function Storefront() {
   const [collection, setCollection] = useState("Green");
   const [category, setCategory] = useState("Todos");
-  const [cart, setCart] = useState<number[]>([]);
+  const { ids: cart, items: cartItems, subtotal, add, removeOne, removeAll, clear } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
@@ -67,8 +55,6 @@ function Storefront() {
     return false;
   }
   const filtered = useMemo(() => products.filter((p) => p.collection === collection && (category === "Todos" || p.category === category || category === "Exclusivo" && p.exclusive)), [collection, category]);
-  const cartItems = useMemo(() => products.map((product) => ({ ...product, quantity: cart.filter((id) => id === product.id).length })).filter((product) => product.quantity > 0), [cart]);
-  const subtotal = cartItems.reduce((sum, product) => sum + product.price * product.quantity, 0);
 
   useEffect(() => {
     if (!cartOpen) return;
@@ -80,15 +66,9 @@ function Storefront() {
 
   function addToCart(id: number, title: string) {
     if (!requireLogin()) return;
-    setCart((items) => [...items, id]);
+    add(id);
     setNotice(`${title} se añadió a tu bolsa`);
     window.setTimeout(() => setNotice(""), 2400);
-  }
-
-  function removeOne(id: number) {
-    const index = cart.lastIndexOf(id);
-    if (index < 0) return;
-    setCart((items) => items.filter((_, itemIndex) => itemIndex !== index));
   }
 
   return <main id="inicio" className="min-h-screen bg-background text-foreground">
@@ -99,7 +79,7 @@ function Storefront() {
         <nav className="hidden items-center justify-center gap-7 lg:flex">{navItems.map((item) => <a key={item} href={`#${item.toLowerCase().replace(/ /g, "-")}`} className="text-sm font-semibold text-foreground/80 transition-colors hover:text-primary">{item}</a>)}</nav>
         <div className="flex shrink-0 items-center gap-1">
           <Button variant="ghost" size="icon" aria-label="Buscar" onClick={() => setSearchOpen(!searchOpen)}><Search /></Button>
-          {user ? <DropdownMenu><DropdownMenuTrigger asChild><button aria-label="Mi cuenta" className="mx-1 grid size-9 place-items-center rounded-full bg-forest text-xs font-bold text-primary-foreground ring-2 ring-gold/60">{initials(user.name)}</button></DropdownMenuTrigger><DropdownMenuContent align="end" className="w-56"><DropdownMenuLabel><p className="truncate">{user.name}</p><p className="truncate text-xs font-normal text-muted-foreground">{user.email}</p></DropdownMenuLabel><DropdownMenuSeparator /><DropdownMenuItem>Mi Perfil</DropdownMenuItem><DropdownMenuItem onClick={() => { logout(); setCart([]); toast("Sesión cerrada"); }}>Cerrar Sesión</DropdownMenuItem></DropdownMenuContent></DropdownMenu> : <Button variant="ghost" size="icon" aria-label="Iniciar sesión" asChild><Link to="/auth"><UserRound /></Link></Button>}
+          {user ? <DropdownMenu><DropdownMenuTrigger asChild><button aria-label="Mi cuenta" className="mx-1 grid size-9 place-items-center rounded-full bg-forest text-xs font-bold text-primary-foreground ring-2 ring-gold/60">{initials(user.name)}</button></DropdownMenuTrigger><DropdownMenuContent align="end" className="w-56"><DropdownMenuLabel><p className="truncate">{user.name}</p><p className="truncate text-xs font-normal text-muted-foreground">{user.email}</p></DropdownMenuLabel><DropdownMenuSeparator /><DropdownMenuItem>Mi Perfil</DropdownMenuItem><DropdownMenuItem onClick={() => { logout(); clear(); toast("Sesión cerrada"); }}>Cerrar Sesión</DropdownMenuItem></DropdownMenuContent></DropdownMenu> : <Button variant="ghost" size="icon" aria-label="Iniciar sesión" asChild><Link to="/auth"><UserRound /></Link></Button>}
           <Button variant="ghost" size="icon" aria-label={`Carrito con ${cart.length} productos`} className="relative" onClick={() => setCartOpen(true)}><CoffeeCupIcon />{cart.length > 0 && <span className="absolute -right-0.5 -top-0.5 grid size-4 place-items-center rounded-full bg-accent text-[9px] font-bold text-accent-foreground">{cart.length}</span>}</Button>
           <Button variant="ghost" size="icon" aria-label="Abrir menú" className="lg:hidden" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <X /> : <Menu />}</Button>
         </div>
@@ -130,8 +110,8 @@ function Storefront() {
     {notice && <div role="status" className="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-full bg-forest px-5 py-3 text-sm font-semibold text-primary-foreground shadow-xl">{notice}</div>}
     {cartOpen && <div className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-labelledby="cart-title"><button type="button" aria-label="Cerrar carrito" onClick={() => setCartOpen(false)} className="absolute inset-0 h-full w-full cursor-default bg-overlay backdrop-blur-sm"/><aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-cart text-cart-foreground shadow-2xl">
       <div className="flex items-start justify-between border-b border-cart-foreground/15 px-6 py-7"><div><p id="cart-title" className="text-xs font-bold uppercase tracking-[0.2em] text-gold">Tu carrito</p><p className="mt-1 font-display text-2xl">{cart.length} {cart.length === 1 ? "producto" : "productos"}</p></div><Button variant="ghost" size="icon" aria-label="Cerrar carrito" className="text-cart-foreground hover:bg-cart-foreground/10 hover:text-cart-foreground" onClick={() => setCartOpen(false)}><X /></Button></div>
-      <div className="flex-1 overflow-y-auto px-6 py-5">{cartItems.length ? <div className="grid gap-4">{cartItems.map((product) => <article key={product.id} className="grid grid-cols-[84px_minmax(0,1fr)_auto] gap-4 border-b border-cart-foreground/15 pb-5"><img src={product.image} alt="" className="aspect-square w-full rounded-md object-cover"/><div className="min-w-0"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-gold">{product.category}</p><h3 className="mt-1 font-display text-lg leading-tight">{product.title}</h3><div className="mt-4 flex w-fit items-center rounded-full border border-cart-foreground/25"><Button variant="ghost" size="icon" aria-label={`Quitar una unidad de ${product.title}`} className="size-8 text-cart-foreground hover:bg-cart-foreground/10 hover:text-cart-foreground" onClick={() => removeOne(product.id)}><Minus /></Button><span className="w-7 text-center text-sm font-semibold">{product.quantity}</span><Button variant="ghost" size="icon" aria-label={`Añadir una unidad de ${product.title}`} className="size-8 text-cart-foreground hover:bg-cart-foreground/10 hover:text-cart-foreground" onClick={() => addToCart(product.id, product.title)}><Plus /></Button></div></div><div className="flex flex-col items-end justify-between"><Button variant="ghost" size="icon" aria-label={`Eliminar ${product.title}`} className="size-8 text-cart-foreground/60 hover:bg-cart-foreground/10 hover:text-cart-foreground" onClick={() => setCart((items) => items.filter((id) => id !== product.id))}><X /></Button><p className="whitespace-nowrap text-sm font-bold">S/ {product.price * product.quantity}.00</p></div></article>)}</div> : <div className="grid h-full place-items-center text-center"><div><p className="font-display text-2xl">Tu carrito está vacío</p><Button variant="outline" className="mt-5 border-cart-foreground/50 text-cart-foreground hover:bg-cart-foreground hover:text-cart" onClick={() => setCartOpen(false)}>Seguir comprando</Button></div></div>}</div>
-      <div className="border-t border-cart-foreground/15 bg-cart-summary px-6 py-6"><div className="flex items-center justify-between"><span className="text-xs font-bold uppercase tracking-[0.16em]">Subtotal</span><span className="font-display text-2xl">S/ {subtotal}.00</span></div><p className="mt-2 text-xs text-cart-foreground/60">Envío y descuentos se calculan en el checkout</p><Button size="lg" className="mt-5 w-full bg-gold text-cart hover:bg-gold/90" disabled={cart.length === 0} onClick={() => { if (requireLogin()) toast.success("¡Pedido listo! Continuaremos con el pago."); }}>Ir al checkout <ArrowRight /></Button></div>
+      <div className="flex-1 overflow-y-auto px-6 py-5">{cartItems.length ? <div className="grid gap-4">{cartItems.map((product) => <article key={product.id} className="grid grid-cols-[84px_minmax(0,1fr)_auto] gap-4 border-b border-cart-foreground/15 pb-5"><img src={product.image} alt="" className="aspect-square w-full rounded-md object-cover"/><div className="min-w-0"><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-gold">{product.category}</p><h3 className="mt-1 font-display text-lg leading-tight">{product.title}</h3><div className="mt-4 flex w-fit items-center rounded-full border border-cart-foreground/25"><Button variant="ghost" size="icon" aria-label={`Quitar una unidad de ${product.title}`} className="size-8 text-cart-foreground hover:bg-cart-foreground/10 hover:text-cart-foreground" onClick={() => removeOne(product.id)}><Minus /></Button><span className="w-7 text-center text-sm font-semibold">{product.quantity}</span><Button variant="ghost" size="icon" aria-label={`Añadir una unidad de ${product.title}`} className="size-8 text-cart-foreground hover:bg-cart-foreground/10 hover:text-cart-foreground" onClick={() => addToCart(product.id, product.title)}><Plus /></Button></div></div><div className="flex flex-col items-end justify-between"><Button variant="ghost" size="icon" aria-label={`Eliminar ${product.title}`} className="size-8 text-cart-foreground/60 hover:bg-cart-foreground/10 hover:text-cart-foreground" onClick={() => removeAll(product.id)}><X /></Button><p className="whitespace-nowrap text-sm font-bold">S/ {product.price * product.quantity}.00</p></div></article>)}</div> : <div className="grid h-full place-items-center text-center"><div><p className="font-display text-2xl">Tu carrito está vacío</p><Button variant="outline" className="mt-5 border-cart-foreground/50 text-cart-foreground hover:bg-cart-foreground hover:text-cart" onClick={() => setCartOpen(false)}>Seguir comprando</Button></div></div>}</div>
+      <div className="border-t border-cart-foreground/15 bg-cart-summary px-6 py-6"><div className="flex items-center justify-between"><span className="text-xs font-bold uppercase tracking-[0.16em]">Subtotal</span><span className="font-display text-2xl">S/ {subtotal}.00</span></div><p className="mt-2 text-xs text-cart-foreground/60">Envío y descuentos se calculan en el checkout</p><Button size="lg" className="mt-5 w-full bg-gold text-cart hover:bg-gold/90" disabled={cart.length === 0} onClick={() => { if (requireLogin()) { setCartOpen(false); navigate({ to: "/checkout" }); } }}>Ir al checkout <ArrowRight /></Button></div>
     </aside></div>}
   </main>;
 }
