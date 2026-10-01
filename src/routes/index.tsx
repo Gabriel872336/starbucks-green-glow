@@ -66,15 +66,9 @@ function Storefront() {
 
   function addToCart(id: number, title: string) {
     if (!requireLogin()) return;
-    setCart((items) => [...items, id]);
+    add(id);
     setNotice(`${title} se añadió a tu bolsa`);
     window.setTimeout(() => setNotice(""), 2400);
-  }
-
-  function removeOne(id: number) {
-    const index = cart.lastIndexOf(id);
-    if (index < 0) return;
-    setCart((items) => items.filter((_, itemIndex) => itemIndex !== index));
   }
 
   return <main id="inicio" className="min-h-screen bg-background text-foreground">
