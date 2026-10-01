@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as CheckoutExitoRouteImport } from './routes/checkout.exito'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +24,48 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutExitoRoute = CheckoutExitoRouteImport.update({
+  id: '/exito',
+  path: '/exito',
+  getParentRoute: () => CheckoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/checkout': typeof CheckoutRouteWithChildren
+  '/checkout/exito': typeof CheckoutExitoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/checkout': typeof CheckoutRouteWithChildren
+  '/checkout/exito': typeof CheckoutExitoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/checkout': typeof CheckoutRouteWithChildren
+  '/checkout/exito': typeof CheckoutExitoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth'
+  fullPaths: '/' | '/auth' | '/checkout' | '/checkout/exito'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth'
-  id: '__root__' | '/' | '/auth'
+  to: '/' | '/auth' | '/checkout' | '/checkout/exito'
+  id: '__root__' | '/' | '/auth' | '/checkout' | '/checkout/exito'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
+  CheckoutRoute: typeof CheckoutRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +84,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout/exito': {
+      id: '/checkout/exito'
+      path: '/exito'
+      fullPath: '/checkout/exito'
+      preLoaderRoute: typeof CheckoutExitoRouteImport
+      parentRoute: typeof CheckoutRoute
+    }
   }
 }
+
+interface CheckoutRouteChildren {
+  CheckoutExitoRoute: typeof CheckoutExitoRoute
+}
+
+const CheckoutRouteChildren: CheckoutRouteChildren = {
+  CheckoutExitoRoute: CheckoutExitoRoute,
+}
+
+const CheckoutRouteWithChildren = CheckoutRoute._addFileChildren(
+  CheckoutRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
+  CheckoutRoute: CheckoutRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

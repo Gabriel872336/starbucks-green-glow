@@ -5,25 +5,13 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Check, Menu, Minus, Plus, Search, ShoppingBag, UserRound, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { products } from "@/lib/products";
+import { useCart } from "@/lib/cart";
 import heroImage from "@/assets/collection-hero.jpg";
 import vaultImage from "@/assets/membership-vault.jpg";
-import tumblerImage from "@/assets/products/tumbler-green.jpg";
-import mugImage from "@/assets/products/mug-botanical.jpg";
-import kitImage from "@/assets/products/kit-gold.jpg";
-import coffeeImage from "@/assets/products/coffee-reserve.jpg";
-import pinImage from "@/assets/products/pin-botanical.jpg";
-import travelImage from "@/assets/products/travel-cup.jpg";
 
 const navItems = ["Ediciones Limitadas", "Colección", "Exclusivos", "Membresía"];
 const categories = ["Todos", "Vasos térmicos", "Pines", "Kit reutilizable", "Tazas", "Bolsas de café", "Exclusivo"];
-const products = [
-  { id: 1, title: "Tumbler Verde Reserva", price: 129, category: "Vasos térmicos", collection: "Green", image: tumblerImage, exclusive: true },
-  { id: 2, title: "Taza Botánica Andes", price: 89, category: "Tazas", collection: "Perú", image: mugImage, exclusive: false },
-  { id: 3, title: "Kit Experiencia Dorada", price: 249, category: "Kit reutilizable", collection: "Green", image: kitImage, exclusive: true },
-  { id: 4, title: "Café Reserva del Valle", price: 72, category: "Bolsas de café", collection: "Perú", image: coffeeImage, exclusive: true },
-  { id: 5, title: "Pin Botánico Colección", price: 49, category: "Pines", collection: "Perú", image: pinImage, exclusive: false },
-  { id: 6, title: "Vaso Reutilizable Verde", price: 79, category: "Vasos térmicos", collection: "Green", image: travelImage, exclusive: false },
-];
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [
@@ -52,7 +40,7 @@ function WhatsAppIcon() {
 function Storefront() {
   const [collection, setCollection] = useState("Green");
   const [category, setCategory] = useState("Todos");
-  const [cart, setCart] = useState<number[]>([]);
+  const { ids: cart, items: cartItems, subtotal, add, removeOne, removeAll, clear } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
