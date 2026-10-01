@@ -43,7 +43,7 @@ function CheckoutPage() {
   }
 
   function validateCard() {
-    const errors: Record<string, string> = {};
+    const errors: { name?: string; number?: string; expiry?: string; cvv?: string } = {};
     if (!card.name.trim()) errors.name = "Ingresa el nombre del titular";
     if (card.number.replace(/\s/g, "").length !== 16) errors.number = "Ingresa los 16 dígitos de la tarjeta";
     if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(card.expiry)) errors.expiry = "Usa el formato MM/AA";
