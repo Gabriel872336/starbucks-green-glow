@@ -55,8 +55,6 @@ function Storefront() {
     return false;
   }
   const filtered = useMemo(() => products.filter((p) => p.collection === collection && (category === "Todos" || p.category === category || category === "Exclusivo" && p.exclusive)), [collection, category]);
-  const cartItems = useMemo(() => products.map((product) => ({ ...product, quantity: cart.filter((id) => id === product.id).length })).filter((product) => product.quantity > 0), [cart]);
-  const subtotal = cartItems.reduce((sum, product) => sum + product.price * product.quantity, 0);
 
   useEffect(() => {
     if (!cartOpen) return;
