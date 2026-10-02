@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { ArrowLeft, ArrowRight, CreditCard, Lock, Smartphone } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight, Check, CreditCard, Lock, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart";
 
@@ -19,6 +19,7 @@ export const Route = createFileRoute("/checkout")({
 });
 
 type Method = "tarjeta" | "yape";
+type PaymentStatus = "idle" | "processing" | "success";
 
 const inputClass =
   "w-full rounded-lg border border-input bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20";
@@ -33,6 +34,12 @@ function CheckoutPage() {
   const [cardErrors, setCardErrors] = useState<{ name?: string; number?: string; expiry?: string; cvv?: string }>({});
   const [reference, setReference] = useState("");
   const [refError, setRefError] = useState("");
+  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>("idle");
+  const timers = useRef<Array<ReturnType<typeof setTimeout>>>([]);
+
+  useEffect(() => {
+    return () => timers.current.forEach((timer) => clearTimeout(timer));
+  }, []);
 
   function formatNumber(value: string) {
     return value.replace(/\D/g, "").slice(0, 16).replace(/(.{4})/g, "$1 ").trim();
@@ -52,9 +59,19 @@ function CheckoutPage() {
     return Object.keys(errors).length === 0;
   }
 
-  function finish(paymentMethod: string) {
-    placeOrder(paymentMethod);
-    navigate({ to: "/checkout/exito" });
+  function processPayment(paymentMethod: string) {
+    if (paymentStatus !== "idle") return;
+
+    setConfirmOpen(false);
+    setPaymentStatus("processing");
+
+    timers.current.push(
+      setTimeout(() => setPaymentStatus("success"), 3000),
+      setTimeout(() => {
+        placeOrder(paymentMethod);
+        navigate({ to: "/checkout/exito" });
+      }, 4000),
+    );
   }
 
   return (
@@ -249,7 +266,7 @@ function CheckoutPage() {
                               setRefError("Ingresa un número de operación válido");
                               return;
                             }
-                            finish("Yape");
+                            processPayment("Yape");
                           }}
                         >
                           Confirmar Pago Yape
@@ -296,10 +313,41 @@ function CheckoutPage() {
               <Button variant="outline" className="border-cart-foreground/40 text-cart-foreground hover:bg-cart-foreground hover:text-cart" onClick={() => setConfirmOpen(false)}>
                 Cancelar
               </Button>
-              <Button className="bg-gold text-cart hover:bg-gold/90" onClick={() => finish("Tarjeta")}>
+              <Button className="bg-gold text-cart hover:bg-gold/90" onClick={() => processPayment("Tarjeta")}>
                 Aceptar
               </Button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {paymentStatus !== "idle" && (
+        <div
+          className="fixed inset-0 z-[80] grid place-items-center bg-overlay px-5 backdrop-blur-md"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="payment-status-title"
+          aria-live="assertive"
+        >
+          <div className="w-full max-w-sm rounded-xl border border-gold/50 bg-cart p-9 text-center text-cart-foreground shadow-2xl">
+            {paymentStatus === "processing" ? (
+              <>
+                <div className="mx-auto size-16 animate-spin rounded-full border-4 border-cart-foreground/25 border-t-gold motion-reduce:animate-none" />
+                <h2 id="payment-status-title" className="mt-7 font-display text-3xl font-medium">
+                  Procesando pago...
+                </h2>
+                <p className="mt-3 text-sm text-cart-foreground/70">Estamos validando tu transacción de forma segura.</p>
+              </>
+            ) : (
+              <div className="animate-scale-in">
+                <div className="mx-auto grid size-16 place-items-center rounded-full bg-gold text-cart">
+                  <Check className="size-8" strokeWidth={3} />
+                </div>
+                <h2 id="payment-status-title" className="mt-7 font-display text-3xl font-medium">
+                  ¡Pago exitoso!
+                </h2>
+              </div>
+            )}
           </div>
         </div>
       )}
