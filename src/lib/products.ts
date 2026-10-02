@@ -3,6 +3,7 @@ import mugImage from "@/assets/products/mug-botanical.jpg";
 import kitImage from "@/assets/products/kit-gold.jpg";
 import coffeeImage from "@/assets/products/coffee-reserve.jpg";
 import pinImage from "@/assets/products/pin-botanical.jpg";
+import vaultImage from "@/assets/membership-vault.jpg";
 import travelImage from "@/assets/products/travel-cup.jpg";
 
 export type Product = {
@@ -22,4 +23,10 @@ export const products: Product[] = [
   { id: 4, title: "Café Reserva del Valle", price: 72, category: "Bolsas de café", collection: "Perú", image: coffeeImage, exclusive: true },
   { id: 5, title: "Pin Botánico Colección", price: 49, category: "Pines", collection: "Perú", image: pinImage, exclusive: false },
   { id: 6, title: "Vaso Reutilizable Verde", price: 79, category: "Vasos térmicos", collection: "Green", image: travelImage, exclusive: false },
+];
+
+export const memberships: Product[] = [
+  { id: 101, title: "Membresía Green", price: 49, category: "Membresía mensual", collection: "Membresía", image: vaultImage, exclusive: false },
+  { id: 102, title: "Membresía Gold", price: 89, category: "Membresía mensual", collection: "Membresía", image: vaultImage, exclusive: true },
+  { id: 103, title: "Membresía Reserve", price: 149, category: "Membresía mensual", collection: "Membresía", image: vaultImage, exclusive: true },
 ];

@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
-import { products, type Product } from "./products";
+import { products, memberships, type Product } from "./products";
 
 export type CartItem = Product & { quantity: number };
 export type Order = { number: string; items: CartItem[]; total: number; method: string };
@@ -14,6 +14,7 @@ type CartState = {
   removeAll: (id: number) => void;
   clear: () => void;
   placeOrder: (method: string) => Order;
+  setMembership: (id: number) => void;
 };
 
 const CartContext = createContext<CartState | null>(null);
@@ -23,7 +24,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [lastOrder, setLastOrder] = useState<Order | null>(null);
 
   const items = useMemo(
-    () => products.map((p) => ({ ...p, quantity: ids.filter((id) => id === p.id).length })).filter((p) => p.quantity > 0),
+    () => [...products, ...memberships].map((p) => ({ ...p, quantity: ids.filter((id) => id === p.id).length })).filter((p) => p.quantity > 0),
     [ids],
   );
   const subtotal = items.reduce((sum, p) => sum + p.price * p.quantity, 0);
@@ -41,6 +42,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }),
     removeAll: (id) => setIds((c) => c.filter((x) => x !== id)),
     clear: () => setIds([]),
+    setMembership: (id) => setIds((c) => [...c.filter((x) => !memberships.some((m) => m.id === x)), id]),
     placeOrder: (method) => {
       const order: Order = {
         number: `SBX-${Date.now().toString().slice(-8)}`,
