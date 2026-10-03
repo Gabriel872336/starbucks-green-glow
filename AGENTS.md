@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Keep `/checkout` as an outlet layout with its payment screen in `checkout.index.tsx`, so nested completion pages render correctly.
+- Keep the Barista assistant on a streaming `/api/chat` server route and store its single conversation only in browser localStorage, so AI credentials stay private while the chosen history behavior remains device-local.
