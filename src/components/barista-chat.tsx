@@ -11,6 +11,7 @@ import { PromptInput, PromptInputFooter, PromptInputSubmit, PromptInputTextarea 
 import { Shimmer } from "@/components/ai-elements/shimmer";
 import { Button } from "@/components/ui/button";
 import type { AuthUser } from "@/lib/auth";
+import { catalog, PRODUCT_MARKER } from "@/lib/catalog";
 
 const CHAT_KEY = "sbx-barista-chat";
 const WHATSAPP_URL = "https://wa.me/51999999999";
@@ -108,13 +109,29 @@ function BaristaChatSession({
             <ConversationContent className="gap-4 p-4">
               {messages.map((message) => {
                 const text = message.parts.filter((part) => part.type === "text").map((part) => part.text).join("\n");
+                const productIds = [...new Set([...text.matchAll(PRODUCT_MARKER)].map((m) => Number(m[1])))];
+                const cards = productIds.map((id) => catalog.find((p) => p.id === id)).filter((p) => p !== undefined);
                 return (
                   <Message key={message.id} from={message.role} className={message.role === "user" ? "max-w-[84%]" : "max-w-[92%]"}>
                     <MessageContent className={message.role === "user" ? "rounded-lg bg-primary px-3.5 py-2.5 text-primary-foreground" : "rounded-lg border border-border bg-card px-3.5 py-2.5 shadow-sm"}>
                       {message.parts.map((part, index) => {
-                        if (part.type === "text") return <MessageResponse key={`${message.id}-${index}`}>{part.text}</MessageResponse>;
+                        if (part.type === "text") return <MessageResponse key={`${message.id}-${index}`}>{part.text.replace(PRODUCT_MARKER, "").replace(/\[\[[^\]]*$/, "").trim()}</MessageResponse>;
                         return null;
                       })}
+                      {cards.length > 0 && (
+                        <div className="mt-2 grid gap-2">
+                          {cards.map((p) => (
+                            <div key={p.id} className="flex items-center gap-3 rounded-md border border-border bg-cream p-2">
+                              <img src={p.image} alt={p.title} className="size-16 shrink-0 rounded object-cover" loading="lazy" />
+                              <div className="min-w-0">
+                                <p className="text-xs uppercase tracking-wide text-muted-foreground">{p.category}{p.exclusive ? " · Exclusivo" : ""}</p>
+                                <p className="truncate text-sm font-semibold">{p.title}</p>
+                                <p className="text-sm font-bold text-primary">S/ {p.price.toFixed(2)}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       {message.role === "assistant" && text.includes(WHATSAPP_URL) && (
                         <Button size="sm" className="mt-2 w-fit" asChild>
                           <a href={WHATSAPP_URL} target="_blank" rel="noreferrer">Hablar por WhatsApp</a>
