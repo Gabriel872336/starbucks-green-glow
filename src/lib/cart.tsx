@@ -2,7 +2,14 @@ import { createContext, useContext, useMemo, useState, type ReactNode } from "re
 import { products, memberships, type Product } from "./products";
 
 export type CartItem = Product & { quantity: number };
-export type Order = { number: string; items: CartItem[]; total: number; method: string };
+export type Order = {
+  number: string;
+  receiptNumber: string;
+  issuedAt: string;
+  items: CartItem[];
+  total: number;
+  method: string;
+};
 
 type CartState = {
   ids: number[];
@@ -44,8 +51,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     clear: () => setIds([]),
     setMembership: (id) => setIds((c) => [...c.filter((x) => !memberships.some((m) => m.id === x)), id]),
     placeOrder: (method) => {
+      const receiptSequence = Math.floor(100000 + Math.random() * 900000);
       const order: Order = {
         number: `SBX-${Date.now().toString().slice(-8)}`,
+        receiptNumber: `B001-${receiptSequence}`,
+        issuedAt: new Date().toISOString(),
         items,
         total: subtotal,
         method,
