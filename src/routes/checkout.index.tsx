@@ -225,14 +225,14 @@ function CheckoutPage() {
                       </div>
                       <div className="mt-4 flex justify-end">
                         <Button size="lg" type="submit">
-                          <Lock /> Pagar ahora · S/ {subtotal}.00
+                          <Lock /> Pagar ahora · S/ {subtotal.toFixed(2)}
                         </Button>
                       </div>
                     </form>
                   ) : (
                     <div className="mt-8 grid gap-6">
                       <p className="max-w-md text-sm leading-6 text-muted-foreground">
-                        Escanea el código QR desde tu app Yape para realizar el pago de <strong className="text-foreground">S/ {subtotal}.00</strong>.
+                        Escanea el código QR desde tu app Yape para realizar el pago de <strong className="text-foreground">S/ {subtotal.toFixed(2)}</strong>.
                       </p>
                       <div className="w-fit rounded-xl border border-border bg-card p-5">
                         {/* Reemplaza el src de esta imagen con tu código QR de Yape */}
@@ -288,13 +288,13 @@ function CheckoutPage() {
                       <p className="truncate text-sm font-semibold">{p.title}</p>
                       <p className="text-xs text-muted-foreground">Cantidad: {p.quantity}</p>
                     </div>
-                    <p className="whitespace-nowrap text-sm font-bold">S/ {p.price * p.quantity}.00</p>
+                    <p className="whitespace-nowrap text-sm font-bold">S/ {(p.price * p.quantity).toFixed(2)}</p>
                   </div>
                 ))}
               </div>
               <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
                 <span className="text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground">Total</span>
-                <span className="font-display text-2xl text-forest">S/ {subtotal}.00</span>
+                <span className="font-display text-2xl text-forest">S/ {subtotal.toFixed(2)}</span>
               </div>
             </aside>
           </div>
@@ -307,7 +307,7 @@ function CheckoutPage() {
           <div className="relative w-full max-w-sm rounded-xl bg-cart p-8 text-center text-cart-foreground shadow-2xl">
             <p id="confirm-title" className="font-display text-2xl">¿Confirmar transacción?</p>
             <p className="mt-3 text-sm text-cart-foreground/70">
-              Se cargará <strong className="text-gold">S/ {subtotal}.00</strong> a tu tarjeta terminada en {card.number.replace(/\s/g, "").slice(-4)}.
+              Se cargará <strong className="text-gold">S/ {subtotal.toFixed(2)}</strong> a tu tarjeta terminada en {card.number.replace(/\s/g, "").slice(-4)}.
             </p>
             <div className="mt-7 grid grid-cols-2 gap-3">
               <Button variant="outline" className="border-cart-foreground/40 text-cart-foreground hover:bg-cart-foreground hover:text-cart" onClick={() => setConfirmOpen(false)}>

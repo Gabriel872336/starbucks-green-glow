@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
-import { products, memberships, type Product } from "./products";
+import { products, memberships, storeProducts, type Product } from "./products";
 
 export type CartItem = Product & { quantity: number };
 export type Order = {
@@ -31,7 +31,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [lastOrder, setLastOrder] = useState<Order | null>(null);
 
   const items = useMemo(
-    () => [...products, ...memberships].map((p) => ({ ...p, quantity: ids.filter((id) => id === p.id).length })).filter((p) => p.quantity > 0),
+    () => [...products, ...memberships, ...storeProducts].map((p) => ({ ...p, quantity: ids.filter((id) => id === p.id).length })).filter((p) => p.quantity > 0),
     [ids],
   );
   const subtotal = items.reduce((sum, p) => sum + p.price * p.quantity, 0);
