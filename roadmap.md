@@ -1,4 +1,4 @@
-# In-store favorites
-- [x] Add illustrated store products and category filters above the collections.
-- [x] Integrate store items with the cart, checkout, receipts and Barista catalog.
-- [x] Verify filters, login gating, purchase flow and chat product cards.
+# Limited-time offers
+- [x] Add highlighted offers, discount badges and original/sale prices.
+- [x] Connect offer pricing to cart and Barista recommendations.
+- [x] Verify offer cards, purchase prices and chat recommendations.
