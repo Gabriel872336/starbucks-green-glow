@@ -12,6 +12,7 @@ import { Shimmer } from "@/components/ai-elements/shimmer";
 import { Button } from "@/components/ui/button";
 import type { AuthUser } from "@/lib/auth";
 import { catalog, PRODUCT_MARKER } from "@/lib/catalog";
+import { OfferBadge, ProductPrice } from "@/components/product-price";
 
 const CHAT_KEY = "sbx-barista-chat";
 const WHATSAPP_URL = "https://wa.me/51999999999";
@@ -125,8 +126,9 @@ function BaristaChatSession({
                               <img src={p.image} alt={p.title} className="size-16 shrink-0 rounded object-cover" loading="lazy" />
                               <div className="min-w-0">
                                 <p className="text-xs uppercase tracking-wide text-muted-foreground">{p.category}{p.exclusive ? " · Exclusivo" : ""}</p>
-                                <p className="truncate text-sm font-semibold">{p.title}</p>
-                                <p className="text-sm font-bold text-primary">S/ {p.price.toFixed(2)}</p>
+                                <p className="text-sm font-semibold leading-snug">{p.title}</p>
+                                <div className="mt-1 text-sm"><ProductPrice product={p} /></div>
+                                {p.originalPrice && <div className="mt-1"><OfferBadge product={p} /><p className="mt-1 text-xs text-primary">Oferta por tiempo limitado</p></div>}
                               </div>
                             </div>
                           ))}

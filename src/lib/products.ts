@@ -25,6 +25,7 @@ export type Product = {
   image: string;
   exclusive: boolean;
   description?: string;
+  originalPrice?: number;
 };
 
 export const products: Product[] = [
@@ -43,7 +44,7 @@ export const memberships: Product[] = [
 ];
 
 // Illustrative menu and prices for the conceptual store.
-export const storeCategories = ["Bebidas Icónicas", "Panadería & Pastelería", "Packs de Experiencia"] as const;
+export const storeCategories = ["Bebidas Icónicas", "Panadería & Pastelería", "Packs de Experiencia", "Ofertas Limitadas 🔥"] as const;
 export const storeProducts: Product[] = [
   { id: 201, title: "Caramel Frappuccino", description: "Café, hielo y caramelo con crema batida para un momento especial.", price: 19.90, category: "Bebidas Icónicas", collection: "En tienda", image: storeImage0, exclusive: false },
   { id: 202, title: "Espresso Clásico", description: "Un espresso intenso y aromático, con una delicada capa de crema.", price: 9.90, category: "Bebidas Icónicas", collection: "En tienda", image: storeImage1, exclusive: false },
@@ -54,4 +55,8 @@ export const storeProducts: Product[] = [
   { id: 207, title: "Pack Cappuccino & Muffin", description: "Cappuccino con espuma cremosa y un muffin de arándanos.", price: 24.90, category: "Packs de Experiencia", collection: "En tienda", image: storeImage6, exclusive: false },
   { id: 208, title: "Pack Latte & Croissant", description: "La suavidad de un latte junto a un croissant de mantequilla.", price: 23.90, category: "Packs de Experiencia", collection: "En tienda", image: storeImage7, exclusive: false },
   { id: 209, title: "Pack Frappuccino & Brownie", description: "Caramel Frappuccino y brownie de chocolate para darte un gusto.", price: 29.90, category: "Packs de Experiencia", collection: "En tienda", image: storeImage8, exclusive: false },
+  // Illustrative promotions: price is the amount charged; originalPrice is display-only.
+  { id: 210, title: "Pack Cappuccino & Muffin", description: "Tu desayuno con cappuccino cremoso y muffin de arándanos, ahora en promoción.", originalPrice: 24.90, price: 19.92, category: "Ofertas Limitadas 🔥", collection: "En tienda", image: storeImage6, exclusive: false },
+  { id: 211, title: "Pack Latte & Croissant", description: "Un latte suave y un croissant de mantequilla para empezar bien el día.", originalPrice: 23.90, price: 16.73, category: "Ofertas Limitadas 🔥", collection: "En tienda", image: storeImage7, exclusive: false },
+  { id: 212, title: "Pack Frappuccino & Brownie", description: "Caramel Frappuccino y brownie de chocolate: una combinación para darte un gusto.", originalPrice: 29.90, price: 23.92, category: "Ofertas Limitadas 🔥", collection: "En tienda", image: storeImage8, exclusive: false },
 ];

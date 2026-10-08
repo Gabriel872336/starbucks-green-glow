@@ -13,3 +13,4 @@
 - Keep the Barista assistant on a streaming `/api/chat` server route and store its single conversation only in browser localStorage, so AI credentials stay private while the chosen history behavior remains device-local.
 - Generate receipt PDFs in the browser from the confirmed order snapshot, so customer details never leave the device for document creation.
 - Define in-store products in the shared product data and render them through StoreFavorites with the storefront's purchase callback, so catalog, Barista, cart and receipts use identical items and login gating.
+- Store the charged sale amount in Product.price and the display-only comparison amount in Product.originalPrice; share offer badges and price presentation between store and chat so cart, checkout and receipts charge the same discounted amount.
