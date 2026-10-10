@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as MembresiaRouteImport } from './routes/membresia'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as CheckoutIndexRouteImport } from './routes/checkout.index'
@@ -30,6 +31,11 @@ const AuthRoute = AuthRouteImport.update({
 const CheckoutRoute = CheckoutRouteImport.update({
   id: '/checkout',
   path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MembresiaRoute = MembresiaRouteImport.update({
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/checkout': typeof CheckoutRouteWithChildren
+  '/login': typeof LoginRoute
   '/membresia': typeof MembresiaRoute
   '/api/chat': typeof ApiChatRoute
   '/checkout/exito': typeof CheckoutExitoRoute
@@ -65,6 +72,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/login': typeof LoginRoute
   '/membresia': typeof MembresiaRoute
   '/api/chat': typeof ApiChatRoute
   '/checkout/exito': typeof CheckoutExitoRoute
@@ -75,6 +83,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/checkout': typeof CheckoutRouteWithChildren
+  '/login': typeof LoginRoute
   '/membresia': typeof MembresiaRoute
   '/api/chat': typeof ApiChatRoute
   '/checkout/exito': typeof CheckoutExitoRoute
@@ -86,18 +95,26 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/checkout'
+    | '/login'
     | '/membresia'
     | '/api/chat'
     | '/checkout/exito'
     | '/checkout/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/auth' | '/membresia' | '/api/chat' | '/checkout/exito' | '/checkout'
+    | '/'
+    | '/auth'
+    | '/login'
+    | '/membresia'
+    | '/api/chat'
+    | '/checkout/exito'
+    | '/checkout'
   id:
     | '__root__'
     | '/'
     | '/auth'
     | '/checkout'
+    | '/login'
     | '/membresia'
     | '/api/chat'
     | '/checkout/exito'
@@ -108,6 +125,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   CheckoutRoute: typeof CheckoutRouteWithChildren
+  LoginRoute: typeof LoginRoute
   MembresiaRoute: typeof MembresiaRoute
   ApiChatRoute: typeof ApiChatRoute
 }
@@ -133,6 +151,13 @@ declare module '@tanstack/react-router' {
       path: '/checkout'
       fullPath: '/checkout'
       preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/membresia': {
@@ -184,6 +209,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   CheckoutRoute: CheckoutRouteWithChildren,
+  LoginRoute: LoginRoute,
   MembresiaRoute: MembresiaRoute,
   ApiChatRoute: ApiChatRoute,
 }
